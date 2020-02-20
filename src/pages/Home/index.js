@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { MdAddShoppingCart } from 'react-icons/md';
+import { bindActionCreators } from 'redux';
 import api from '../../services/api';
 import { ProductList } from './styles';
 import { formatPrice } from '../../util/format';
+import * as CartActions from '../../store/modules/cart/actions';
 
 class Home extends Component {
   // eslint-disable-next-line react/state-in-constructor
@@ -25,12 +27,9 @@ class Home extends Component {
 
   handleAddProduct = product => {
     // todo component recebe essa funcao por meio da props quando se conecta com o redux
-    const { dispatch } = this.props;
+    const { addToCart } = this.props;
 
-    dispatch({
-      type: 'ADD_TO_CARD',
-      product,
-    });
+    addToCart(product);
   };
 
   // É interessante fazer as tratativas antes de chegar no render para manter a performance
@@ -61,4 +60,9 @@ class Home extends Component {
   }
 }
 
-export default connect()(Home);
+// possibilita o acesso das actions por meio de props
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+// O primeiro parametro eh para o mapStateToProps
+export default connect(null, mapDispatchToProps)(Home);
