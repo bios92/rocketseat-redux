@@ -25,16 +25,17 @@ class Home extends Component {
     this.setState({ products: data });
   }
 
-  handleAddProduct = product => {
+  handleAddProduct = id => {
     // todo component recebe essa funcao por meio da props quando se conecta com o redux
-    const { addToCart } = this.props;
+    const { addToCartRequest } = this.props;
 
-    addToCart(product);
+    addToCart(id);
   };
 
   // É interessante fazer as tratativas antes de chegar no render para manter a performance
   render() {
     const { products } = this.state;
+    const { amount } = this.props;
 
     return (
       <ProductList>
@@ -46,10 +47,11 @@ class Home extends Component {
 
             <button
               type="button"
-              onClick={() => this.handleAddProduct(product)}
+              onClick={() => this.handleAddProduct(product.id)}
             >
               <div>
-                <MdAddShoppingCart size={16} color="#fff" />
+                <MdAddShoppingCart size={16} color="#fff" />{' '}
+                {amount[product.id] || 0}
               </div>
               <span>ADICIONAR AO CARRINHO</span>
             </button>
@@ -60,9 +62,16 @@ class Home extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  amount: state.cart.reduce((amount, product) => {
+    amount[product.id] = product.amount;
+    return amount;
+  }, {}),
+});
+
 // possibilita o acesso das actions por meio de props
 const mapDispatchToProps = dispatch =>
   bindActionCreators(CartActions, dispatch);
 
 // O primeiro parametro eh para o mapStateToProps
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
