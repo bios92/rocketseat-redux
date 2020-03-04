@@ -1,10 +1,15 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import { createSagaMiddleware } from 'redux-saga';
+import createSagaMiddleware from 'redux-saga';
 
 import rootReducer from './modules/rootReducer';
 import rootSaga from './modules/rootSaga';
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMonitor =
+  process.env.NODE_ENV === 'development'
+    ? console.tron.createSagaMonitor()
+    : null;
+
+const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
 
 // faz parte da config do reactotron
 const enhancer =
@@ -13,5 +18,7 @@ const enhancer =
     : applyMiddleware(sagaMiddleware);
 
 const store = createStore(rootReducer, enhancer);
+
+sagaMiddleware.run(rootSaga);
 
 export default store;

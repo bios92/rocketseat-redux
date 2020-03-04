@@ -29,7 +29,7 @@ class Home extends Component {
     // todo component recebe essa funcao por meio da props quando se conecta com o redux
     const { addToCartRequest } = this.props;
 
-    addToCart(id);
+    addToCartRequest(id);
   };
 
   // É interessante fazer as tratativas antes de chegar no render para manter a performance
